@@ -1,8 +1,9 @@
-#include "Chaine.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-CellPoint *creerpoint(double x, double y)
+#include "Chaine.h"
+
+CellPoint *creer_point(double x, double y)
 {
     CellPoint *new = malloc(sizeof(CellPoint));
     new->suiv = NULL;
@@ -11,52 +12,27 @@ CellPoint *creerpoint(double x, double y)
     return new;
 }
 
-CellPoint *liste_points(int len, char *l)
+CellPoint *liste_points(int nb_points, char *l)
 {
-    if (!len)
+    if (!nb_points)
         return NULL;
     double x, y;
-    x = strtod(l, &l);
-    y = strtod(l, &l);
-    CellPoint *new = creerpoint(x, y);
-    new->suiv = liste_points(len - 1, l);
+    char *reste;
+    x = strtod(l, &reste);
+    y = strtod(reste, &reste);
+    CellPoint *new = creer_point(x, y);
+    new->suiv = liste_points(nb_points - 1, reste);
     return new;
 }
 
+// Insère en fin de liste chaînée
 CellChaine *insertion(CellChaine *l, CellChaine *new)
 {
-    // Insère en fin de liste chaînée
     if (!l)
         return new;
     else
         l->suiv = insertion(l->suiv, new);
     return l;
-}
-
-Chaines *lectureChaine(FILE *f)
-{
-    Chaines *res = malloc(sizeof(Chaines));
-    char buffer[1024];
-
-    // Ajout du nb_chaine et gamma à res
-    fgets(buffer, 1024, f);
-    sscanf(buffer, "NbChain: %d", &(res->nbChaines));
-    fgets(buffer, 1024, f);
-    sscanf(buffer, "Gamma: %d", &(res->gamma));
-
-    while (fgets(buffer, 1024, f))
-    {
-        char l_points[1024];
-        int nb_points;
-        // Création de Cellchaine
-        CellChaine *new = malloc(sizeof(CellChaine));
-        sscanf(buffer, "%d %d %s", (&new->numero), &nb_points, l_points);
-        new->points = liste_points(nb_points, l_points);
-
-        // Ajout à la liste des chaînes
-        res->chaines = insertion(res->chaines, new);
-    }
-    return res;
 }
 
 void liberer_liste_point(CellPoint *l)
@@ -66,14 +42,40 @@ void liberer_liste_point(CellPoint *l)
     free(l);
 }
 
+Chaines *lectureChaines(FILE *f)
+{
+    Chaines *res = malloc(sizeof(Chaines));
+    if (!res)
+    {
+        printf("lectureChaine : erreur d'allocation de mémoire\n");
+    }
+
+    char buffer[1024];
+
+    // Ajout du nb_chaine et gamma à res
+    fgets(buffer, 1024, f);
+    sscanf(buffer, "NbChain: %d", &(res->nbChaines));
+    fgets(buffer, 1024, f);
+    sscanf(buffer, "Gamma: %d", &(res->gamma));
+
+    int nb_points;
+    char l_points[1010];
+    CellChaine *new = NULL;
+    while (fgets(buffer, 1024, f))
+    {
+        // Création de Cellchaine
+        new = malloc(sizeof(CellChaine));
+        sscanf(buffer, "%d %d %[^\n]", (&new->numero), &nb_points, l_points);
+        new->points = liste_points(nb_points, l_points);
+        // Ajout à la liste des chaînes
+        res->chaines = insertion(res->chaines, new);
+    }
+    return res;
+}
+
 void ecrireChaines(Chaines *C, FILE *f)
 {
-    if (f == NULL)
-    {
-        printf("Erreur d'ecriture d'un fichier\n");
-        return;
-    }
-    if (C == NULL)
+    if (!C)
         return;
 
     fprintf(f, "NbChain: %d\nGamma: %d\n", C->nbChaines, C->gamma);
@@ -105,15 +107,17 @@ void ecrireChaines(Chaines *C, FILE *f)
     }
 }
 
-int main()
-{
-    char *nom_fic = "00014_burma.cha";
-    FILE *f = fopen(nom_fic, "r");
-    char *nom_tmp = "tmp.cha";
-    FILE *tmp = fopen(nom_tmp, "w");
-    Chaines *test = lectureChaine(f);
-    ecrireChaines(test, tmp);
-    fclose(f);
-    fclose(tmp);
-    return 0;
-}
+// int main()
+// {
+//     char *nom_fic = "00014_burma.cha";
+//     FILE *f = fopen(nom_fic, "r");
+//     FILE *f_tmp = fopen("tmp.txt", "w");
+
+//     Chaines *test = lectureChaine(f);
+//     ecrireChaines(test, f_tmp);
+//     CellPoint *courant = test->chaines->points;
+
+//     fclose(f_tmp);
+//     fclose(f);
+//     return 0;
+// }
