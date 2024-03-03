@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "SVGLib/SVGwriter.h"
 #include "Chaine.h"
@@ -161,4 +162,35 @@ void afficheChainesSVG(Chaines *C, char *nomInstance)
         chaine_cour = chaine_cour->suiv;
     }
     SVGfinalize(&svg);
+}
+
+double distancePoint(CellPoint *a, CellPoint *b)
+{
+    double X = b->x - a->x;
+    double Y = b->y - a->y;
+    return sqrt(X * X + Y * Y);
+}
+
+double longueurChaine(CellChaine *c)
+{
+    double res = 0;
+    CellPoint *courant = c->points;
+    while (courant->suiv)
+    {
+        res += distancePoint(courant, courant->suiv);
+        courant = courant->suiv;
+    }
+    return res;
+}
+
+double longueurTotale(Chaines *C)
+{
+    double res = 0;
+    CellChaine *courant_chaine = C->chaines;
+    while (courant_chaine)
+    {
+        res += longueurChaine(courant_chaine);
+        courant_chaine = courant_chaine->suiv;
+    }
+    return res;
 }
