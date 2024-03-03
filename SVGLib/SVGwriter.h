@@ -12,14 +12,13 @@
 #define Red "#FF0000"
 #define RoyalBlue "#486CE8"
 
+typedef struct SVGwriter_struct
+{
 
-
-typedef struct SVGwriter_struct {
-  
   char lineColor[10];  /* Default color value */
   char pointColor[10]; /* Default color value */
   int sizeX, sizeY;    /* Picture size */
-   
+
   FILE *file; /* File stream */
 
   /* Technical value for random color generation */
@@ -27,12 +26,10 @@ typedef struct SVGwriter_struct {
 
 } SVGwriter;
 
-
-  
 /* Initialise le struct SVGwriter passe en parametre
       nomfic: nom du fichier html \'a creer
       sizeX, sizeY: taille en pixel de l'image \'a creer */
-void SVGinit(SVGwriter *svg,char *nomfic, int sizeX, int sizeY);
+void SVGinit(SVGwriter *svg, char *nomfic, int sizeX, int sizeY);
 
 /* Fixe la couleur des lignes pour la suite */
 void SVGlineColor(SVGwriter *svg, char *col);
@@ -43,7 +40,7 @@ void SVGlineRandColor(SVGwriter *svg);
 /* Fixe la couleur des points pour la suite */
 void SVGpointColor(SVGwriter *svg, char *col);
 
-/* Ecrit un point dans le fichier */ 
+/* Ecrit un point dans le fichier */
 void SVGpoint(SVGwriter *svg, double x, double y);
 
 /*Ecrit un segment dans le fichier */
