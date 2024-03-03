@@ -120,11 +120,9 @@ void afficheChainesSVG(Chaines *C, char *nomInstance)
     while (chaine_cour)
     {
         // Trouver les coordonnees max et min
-        printf("Chaine cour\n");
         point_cour = chaine_cour->points;
         while (point_cour != NULL)
         {
-            printf("Point cour\n");
             if (max_x < point_cour->x)
                 max_x = point_cour->x;
             if (max_y < point_cour->y)
@@ -137,12 +135,10 @@ void afficheChainesSVG(Chaines *C, char *nomInstance)
         }
         chaine_cour = chaine_cour->suiv;
     }
-    printf("Init\n");
     SVGinit(&svg, nomInstance, 500, 500);
     chaine_cour = C->chaines;
     while (chaine_cour)
     {
-        printf("Dessin\n");
         point_cour = chaine_cour->points;
         SVGlineRandColor(&svg);
         // Dessiner le premier point
