@@ -26,17 +26,8 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     return res;
 }
 
-CellNoeud * trouver_cellule(Reseau *r, Noeud *nd){
-    if(!r) return NULL;
-    CellNoeud * courant = r->noeuds;
-    while(courant){
-        if(courant->nd == nd) return courant;
-    }
-    return NULL;
-}
-
 void ajout_commodite_fin(CellCommodite *courant, CellCommodite *new){
-    if(courant) new->suiv = courant;
+    new->suiv = courant;
     courant=new;
 }
 
@@ -90,4 +81,8 @@ Reseau* reconstitueReseauListe(Chaines *C){
         ch_courante=ch_courante->suiv;
     }
     return res;
+}
+
+int main(){
+
 }
