@@ -79,7 +79,7 @@ Reseau* reconstitueReseauListe(Chaines *C){
                     ajout_voisins(nd,nd_suiv);
                 }
 
-                // Si je suis dernière, je me note comme extrB de la commodité 
+                // Si elle est dernière, je la note comme extrB de la commodité 
                 else new_commodite->extrB = nd;
 
                 courant = courant->suiv;
