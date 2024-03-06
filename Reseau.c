@@ -66,7 +66,7 @@ Reseau* reconstitueReseauListe(Chaines *C){
 
                 // La cellule suivante est sa voisine : je la rajoute à la liste des voisins
                 if(courant->suiv){
-                    Noeud * nd_suiv = rechercheCreeNoeudListe(res,courant->x,courant->y);
+                    Noeud * nd_suiv = rechercheCreeNoeudListe(res,courant->suiv->x,courant->suiv->y);
                     ajout_voisins(nd,nd_suiv);
                 }
 
