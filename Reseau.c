@@ -61,6 +61,8 @@ Reseau* reconstitueReseauListe(Chaines *C){
     for(int i = 0 ; i<C->nbChaines ; i++){
         CellCommodite * new_commodite = malloc(sizeof(CellCommodite));
         CellChaine *ch_courante = C->chaines;
+
+        // Je parcours les chaines
         while(ch_courante){
 
             CellPoint *courant = ch_courante->points;
