@@ -26,7 +26,7 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     return res;
 }
 
-void ajout_commodite_fin(CellCommodite *courant, CellCommodite *new){
+void ajout_commodite(CellCommodite *courant, CellCommodite *new){
     new->suiv = courant;
     courant=new;
 }
