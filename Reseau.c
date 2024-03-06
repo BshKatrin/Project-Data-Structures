@@ -1,5 +1,9 @@
 #include "Reseau.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include "Chaine.h"
+#include <math.h>
+#include "SVGLib/SVGwriter.h"
 
 Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     if(!R) return NULL;
@@ -41,20 +45,18 @@ void ajout_voisins(Noeud *nd, Noeud * new_voisin){
 
 
 Reseau* reconstitueReseauListe(Chaines *C){
-    // Création du réseau
-    Reseau * res = malloc(sizeof(Reseau));
+    //Création du réseau
+    Reseau * res = (Reseau *) malloc(sizeof(Reseau));
     res->nbNoeuds=0;
     res->gamma=C->gamma;
     res->noeuds=NULL;
     res->commodites=NULL;
 
     // Ajout des points et commodités
-    for(int i = 0 ; i<C->nbChaines ; i++){
-        CellCommodite * new_commodite = malloc(sizeof(CellCommodite));
+        CellCommodite * new_commodite = (CellCommodite *)malloc(sizeof(CellCommodite));
         CellChaine *ch_courante = C->chaines;
-
+        for(int i = 0 ; i<C->nbChaines ; i++ && ch_courante->suiv ){
         // Je parcours les chaines
-        while(ch_courante){
 
             CellPoint *courant = ch_courante->points;
             new_commodite->extrA=rechercheCreeNoeudListe(res,courant->x,courant->y);
@@ -62,7 +64,6 @@ Reseau* reconstitueReseauListe(Chaines *C){
             while(courant){
                 // Je recherche ou crée mon noeud associé 
                 Noeud *nd = rechercheCreeNoeudListe(res,courant->x,courant->y);
-                CellNoeud * cell_n = trouver_cellule(res,nd);
 
                 // La cellule suivante est sa voisine : je la rajoute à la liste des voisins
                 if(courant->suiv){
@@ -78,11 +79,13 @@ Reseau* reconstitueReseauListe(Chaines *C){
             // J'ajoute ma commodité à la liste des comodités existantes
             ajout_commodite(res->commodites,new_commodite);
         }
-        ch_courante=ch_courante->suiv;
-    }
-    return res;
+   return res;
 }
 
 int main(){
-
+    FILE * f = fopen("00014_burma.cha","r");
+    Chaines *test = lectureChaines(f);
+    fclose(f);
+    Reseau *R =reconstitueReseauListe(test);
+    return 0;
 }
