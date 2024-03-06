@@ -75,6 +75,18 @@ Chaines *lectureChaines(FILE *f)
     return res;
 }
 
+int nbPoints(CellChaine *chaine)
+{
+    int cmt = 0;
+    CellPoint *point_cour = chaine->points;
+    while (point_cour)
+    {
+        cmt++;
+        point_cour = point_cour->suiv;
+    }
+    return cmt;
+}
+
 void ecrireChaines(Chaines *C, FILE *f)
 {
     if (!C)
@@ -88,13 +100,7 @@ void ecrireChaines(Chaines *C, FILE *f)
     {
         fprintf(f, "%d ", chaine->numero);
         // Compter le nb des points
-        nb_points = 0;
-        point = chaine->points;
-        while (point)
-        {
-            nb_points++;
-            point = point->suiv;
-        }
+        nb_points = nbPoints(chaine);
         fprintf(f, "%d ", nb_points);
         // Ecrire des (x, y) des points
         point = chaine->points;

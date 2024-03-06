@@ -1,17 +1,23 @@
 CC=gcc
 CFLAGS=-Wall
-PROGRAMS=ChaineMain
+PROGRAMS=ChaineMain ReconstitueReseau
 
 all : $(PROGRAMS)
+
+SVGLib/SVGwriter.o : SVGLib/SVGwriter.c
+	$(CC) $(CFLAGS) -c -o $@ $^
 
 Chaine.o : Chaine.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-ChaineMain: ChaineMain.c Chaine.o SVGLib/SVGwriter.o
+ChaineMain : ChaineMain.c Chaine.o SVGLib/SVGwriter.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-SVGLib/SVGwriter.o : SVGLib/SVGwriter.c
+Reseau.o : Reseau.c
 	$(CC) $(CFLAGS) -c -o $@ $^
+	
+ReconstitueReseau : ReconstitueReseau.c Chaine.o Reseau.o SVGLib/SVGwriter.o
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean : 
 	rm *.o SVGLib/*.o $(PROGRAMS) 

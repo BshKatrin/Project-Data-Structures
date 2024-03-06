@@ -4,15 +4,15 @@
 #include "SVGLib/SVGwriter.h"
 #include "Chaine.h"
 
-int main(int argv, char **argc)
+int main(int argc, char **argv)
 {
-    if (argv < 4)
+    if (argc < 4)
     {
-        printf("Nom du fichier requis. %s <nom-fichier-lecture> <nom-fichier-ecriture> <nom-fichier-html>\n", argc[0]);
+        printf("Nom du fichier requis. %s <nom-fichier-lecture> <nom-fichier-ecriture> <nom-fichier-html>\n", argv[0]);
         return 1;
     }
-    FILE *f_lecture = fopen(argc[1], "r");
-    FILE *f_ecriture = fopen(argc[2], "w");
+    FILE *f_lecture = fopen(argv[1], "r");
+    FILE *f_ecriture = fopen(argv[2], "w");
 
     if (!f_lecture || !f_ecriture)
     {
@@ -22,7 +22,7 @@ int main(int argv, char **argc)
 
     Chaines *chaine = lectureChaines(f_lecture);
     ecrireChaines(chaine, f_ecriture);
-    afficheChainesSVG(chaine, argc[3]);
+    afficheChainesSVG(chaine, argv[3]);
 
     fclose(f_lecture);
     fclose(f_ecriture);
