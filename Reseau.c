@@ -53,34 +53,39 @@ Reseau* reconstitueReseauListe(Chaines *C){
     // Création du réseau
     Reseau * res = malloc(sizeof(Reseau));
     res->nbNoeuds=0;
-    res->noeuds=NULL;
     res->gamma=C->gamma;
+    res->noeuds=NULL;
     res->commodites=NULL;
 
     // Ajout des points et commodités
     for(int i = 0 ; i<C->nbChaines ; i++){
         CellCommodite * new_commodite = malloc(sizeof(CellCommodite));
-        CellPoint *courant = C->chaines[i].points;
-        new_commodite->extrA=rechercheCreeNoeudListe(res,courant->x,courant->y);
+        CellChaine *ch_courante = C->chaines;
+        while(ch_courante){
 
-        while(courant){
-            // Je recherche ou crée mon noeud associé 
-            Noeud *nd = rechercheCreeNoeudListe(res,courant->x,courant->y);
-            CellNoeud * cell_n = trouver_cellule(res,nd);
+            CellPoint *courant = ch_courante->points;
+            new_commodite->extrA=rechercheCreeNoeudListe(res,courant->x,courant->y);
 
-            // La cellule suivante est sa voisine : je la rajoute à la liste des voisins
-            if(courant->suiv){
-                Noeud * nd_suiv = rechercheCreeNoeudListe(res,courant->x,courant->y);
-                ajout_voisins(nd,nd_suiv);
-            }
+            while(courant){
+                // Je recherche ou crée mon noeud associé 
+                Noeud *nd = rechercheCreeNoeudListe(res,courant->x,courant->y);
+                CellNoeud * cell_n = trouver_cellule(res,nd);
 
-            // Si je suis dernière, je me note comme extrB de la commodité 
-            else new_commodite->extrB = nd;
+                // La cellule suivante est sa voisine : je la rajoute à la liste des voisins
+                if(courant->suiv){
+                    Noeud * nd_suiv = rechercheCreeNoeudListe(res,courant->x,courant->y);
+                    ajout_voisins(nd,nd_suiv);
+                }
 
-            courant = courant->suiv;
-        } 
-        // J'ajoute ma commodité à la liste des comodités existantes
-        ajout_commodite(res->commodites,new_commodite);
+                // Si je suis dernière, je me note comme extrB de la commodité 
+                else new_commodite->extrB = nd;
+
+                courant = courant->suiv;
+            } 
+            // J'ajoute ma commodité à la liste des comodités existantes
+            ajout_commodite(res->commodites,new_commodite);
+        }
+        ch_courante=ch_courante->suiv;
     }
     return res;
 }
