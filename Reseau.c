@@ -31,20 +31,22 @@ int nbLiaisons(Reseau *R)
         return 0;
     }
     int cmt = 0;
-    CellNoeud *cell_cour = R->noeuds;
+    CellNoeud *noeud_cour = R->noeuds;
     CellNoeud *voisin_cour = NULL;
     Noeud *noeud = NULL;
 
-    while (cell_cour)
+    while (noeud_cour)
     {
-        noeud = cell_cour->nd;
+        noeud = noeud_cour->nd;
         voisin_cour = noeud->voisins;
         while (voisin_cour)
         {
-            cmt++;
+            // Compter des liaisons sans repetitions, i.e. uniquement dans un sens
+            if (noeud_cour->nd->num > voisin_cour->nd->num)
+                cmt++;
             voisin_cour = voisin_cour->suiv;
         }
-        cell_cour = cell_cour->suiv;
+        noeud_cour = noeud_cour->suiv;
     }
     return cmt;
 }
@@ -71,8 +73,9 @@ void ecrireReseau(Reseau *R, FILE *f)
         noeud_cour = noeud_cour->suiv;
     }
     fputc(10, f);
-    // Ecrire des liaisons
+    // Ecrire des liaisons, eviter les repetitions
     noeud_cour = R->noeuds;
+
     CellNoeud *voisin = NULL;
     while (noeud_cour)
     {
@@ -80,7 +83,9 @@ void ecrireReseau(Reseau *R, FILE *f)
         voisin = noeud->voisins;
         while (voisin)
         {
-            fprintf(f, "l %d %d\n", voisin->nd->num, noeud->num);
+            // Ecrire uniquement dans un seul sens, pour eviter des repetitions
+            if (noeud->num > voisin->nd->num)
+                fprintf(f, "l %d %d\n", voisin->nd->num, noeud->num);
             voisin = voisin->suiv;
         }
 
@@ -179,12 +184,21 @@ void ajouter_commodite(Reseau *R, Noeud *extrA, Noeud *extrB)
 }
 
 // Creer cellnoeud qui point vers noeud donne
-CellNoeud *creer_cell_noeud(Reseau *R, Noeud *nd)
+CellNoeud *creer_cell_noeud(Noeud *nd)
 {
     CellNoeud *cell_nouv = malloc(sizeof(CellNoeud));
     cell_nouv->nd = nd;
     cell_nouv->suiv = NULL;
     return cell_nouv;
+}
+
+void ajout_voisin(Noeud *noeud_cour, Noeud *noeud_voisin)
+{
+    // Creer nouvelle lien
+    CellNoeud *nouv_lien = creer_cell_noeud(noeud_voisin);
+    // Ajout en tete
+    nouv_lien->suiv = noeud_cour->voisins;
+    noeud_cour->voisins = nouv_lien;
 }
 
 // Verifier si voisins contient deja le noeud. Retourne pointeur vers le cellnoeud trouve s'il existe, sinon NULL
@@ -215,7 +229,7 @@ Reseau *reconstitueReseauListe(Chaines *C)
     // Pour voisins
     Noeud *noeud_prec = NULL;
     Noeud *noeud_trouve = NULL;
-    CellNoeud *nouv = NULL;
+    Noeud *noeud_voisin = NULL;
 
     // Pour commodites
     Noeud *extrA = NULL;
@@ -229,18 +243,30 @@ Reseau *reconstitueReseauListe(Chaines *C)
             noeud_trouve = rechercheCreeNoeudListe(res, point_cour->x, point_cour->y);
 
             // MAJ des voisins
+            // Point precedant, s'il existe
             if (noeud_prec)
             {
-                // if noeud_cour_voisins contient deja noeud_prec, faire rien
-                // if noeud_prec_voisins contient deja noeud_cour, faire rien
-                // Sinon, faire ajout de noeud_prec dans le noeud_cour_voisins
-                if ((!recherche_voisin(noeud_trouve->voisins, noeud_prec)) && (!recherche_voisin(noeud_prec->voisins, noeud_trouve)))
-                {
-                    nouv = creer_cell_noeud(res, noeud_prec);
-                    nouv->suiv = noeud_trouve->voisins;
-                    noeud_trouve->voisins = nouv;
-                }
+                // MAJ une liste des voisins du noeud retrouve
+                if (recherche_voisin(noeud_trouve->voisins, noeud_prec) == NULL)
+                    ajout_voisin(noeud_trouve, noeud_prec);
+                // MAJ une liste des voisins d'un voisin du noeud retrouve
+                // Ajouter nouveau noeud dans une liste de ces voisins
+                if (recherche_voisin(noeud_prec->voisins, noeud_trouve) == NULL)
+                    ajout_voisin(noeud_prec, noeud_trouve);
             }
+            // Point suivant, s'il existe
+            if (point_cour->suiv)
+            {
+                noeud_voisin = rechercheCreeNoeudListe(res, point_cour->suiv->x, point_cour->suiv->y);
+                // MAJ une liste des voisins du noeud retrouve
+                if (recherche_voisin(noeud_trouve->voisins, noeud_voisin) == NULL)
+                    ajout_voisin(noeud_trouve, noeud_voisin);
+                // MAJ une liste des voisins d'un voisin du noeud retrouve
+                // Ajouter nouveau noeud dans une liste de ces voisins
+                if (recherche_voisin(noeud_voisin->voisins, noeud_trouve) == NULL)
+                    ajout_voisin(noeud_voisin, noeud_trouve);
+            }
+
             // Definir le premier point comme extrA
             if (extrA == NULL)
                 extrA = noeud_trouve;
@@ -255,6 +281,7 @@ Reseau *reconstitueReseauListe(Chaines *C)
         chaine_cour = chaine_cour->suiv;
         extrA = NULL;
         noeud_prec = NULL;
+        noeud_voisin = NULL;
     }
     return res;
 }
