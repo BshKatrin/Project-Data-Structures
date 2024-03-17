@@ -25,9 +25,7 @@ int main(int argc, char **argv)
 
     Chaines *C = lectureChaines(f_lecture);
     Reseau *R = reconstitueReseauListe(C);
-    printf("Here\n");
     ecrireReseau(R, f_ecriture);
-
     fclose(f_lecture);
     fclose(f_ecriture);
     return 0;
