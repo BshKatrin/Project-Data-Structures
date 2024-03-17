@@ -25,10 +25,18 @@ typedef struct
   CellChaine *chaines; /* La liste chainee des chaines */
 } Chaines;
 
+CellPoint *creer_point(double x, double y);
+CellPoint *liste_points(int nb_points, char *l);
+void liberer_liste_point(CellPoint *l);
+CellChaine *insertion(CellChaine *l, CellChaine *new);
+int nbPoints(CellChaine *chaine);
+
 Chaines *lectureChaines(FILE *f);
 void ecrireChaines(Chaines *C, FILE *f);
 void afficheChainesSVG(Chaines *C, char *nomInstance);
 double longueurTotale(Chaines *C);
 int comptePointsTotal(Chaines *C);
-
+double distancePoint(CellPoint *a, CellPoint *b);
+double longueurChaine(CellChaine *c);
+void liberer_chaines(Chaines **C);
 #endif

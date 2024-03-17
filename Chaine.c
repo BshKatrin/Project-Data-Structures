@@ -196,3 +196,18 @@ double longueurTotale(Chaines *C)
     }
     return res;
 }
+
+void liberer_chaines(Chaines **C)
+{
+    CellChaine *cell_cour = (*C)->chaines;
+    CellChaine *tmp = NULL;
+    while (cell_cour)
+    {
+        liberer_liste_point(cell_cour->points);
+        tmp = cell_cour->suiv;
+        free(cell_cour);
+        cell_cour = tmp;
+    }
+    free(*C);
+    *C = NULL;
+}

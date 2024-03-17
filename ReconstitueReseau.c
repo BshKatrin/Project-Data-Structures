@@ -3,6 +3,7 @@
 
 #include "Chaine.h"
 #include "Reseau.h"
+#include "Hachage.h"
 
 int main(int argc, char **argv)
 {
@@ -24,8 +25,26 @@ int main(int argc, char **argv)
     }
 
     Chaines *C = lectureChaines(f_lecture);
-    Reseau *R = reconstitueReseauListe(C);
+    Reseau *R = NULL;
+
+    switch (type)
+    {
+    case 1:
+        R = reconstitueReseauListe(C);
+        break;
+    case 2:
+        R = reconstitueReseauHachage(C, 15);
+        break;
+    default:
+        printf("Tel choix n'est pas possible\n");
+        break;
+    }
+
     ecrireReseau(R, f_ecriture);
+    afficheReseauSVG(R, "reseau");
+    if (R)
+        liberer_reseau(&R);
+    liberer_chaines(&C);
     fclose(f_lecture);
     fclose(f_ecriture);
     return 0;

@@ -6,7 +6,7 @@
 #include "SVGLib/SVGwriter.h"
 #include "Chaine.h"
 #include "Reseau.h"
-
+// #include "Hachage.h"
 #define EPS 1e-3 // precision pour comparaison de l'egalite entre double
 
 int nbCommodites(Reseau *R)
@@ -101,7 +101,7 @@ void ecrireReseau(Reseau *R, FILE *f)
     }
 }
 
-void affichenoeud_nouveauSVG(Reseau *R, char *nomInstance)
+void afficheReseauSVG(Reseau *R, char *nomInstance)
 {
     CellNoeud *noeud_cour, *voisin;
     SVGwriter svg;
@@ -143,6 +143,38 @@ bool noeuds_egaux(Noeud *n1, Noeud *n2)
     return (fabs(n1->x - n2->x) < EPS) && (fabs(n1->y - n2->y) < EPS);
 }
 
+bool noeuds_x_y_egaux(Noeud *n, double x, double y)
+{
+    return (fabs(n->x - x) < EPS) && (fabs(n->y - y) < EPS);
+}
+
+Noeud *creer_noeud(int num, double x, double y)
+{
+    Noeud *noeud_nouv = malloc(sizeof(Noeud));
+    noeud_nouv->x = x;
+    noeud_nouv->y = y;
+    noeud_nouv->num = num;
+    noeud_nouv->voisins = NULL;
+    return noeud_nouv;
+}
+
+// Creer cellnoeud qui point vers noeud donne
+CellNoeud *creer_cell_noeud(Noeud *nd)
+{
+    CellNoeud *cell_nouv = malloc(sizeof(CellNoeud));
+    cell_nouv->nd = nd;
+    cell_nouv->suiv = NULL;
+    return cell_nouv;
+}
+
+void ajouter_noeud_reseau(Reseau *R, Noeud *nd)
+{
+    CellNoeud *cell_nouv = creer_cell_noeud(nd);
+    cell_nouv->suiv = R->noeuds;
+    R->noeuds = cell_nouv;
+    (R->nbNoeuds)++;
+}
+
 Noeud *rechercheCreeNoeudListe(Reseau *R, double x, double y)
 {
     if (!R)
@@ -157,19 +189,15 @@ Noeud *rechercheCreeNoeudListe(Reseau *R, double x, double y)
     }
 
     //   Ajout en cas d'absence, je crée le noeud
-    Noeud *noeud_nouv = malloc(sizeof(Noeud));
-    noeud_nouv->x = x;
-    noeud_nouv->y = y;
-    noeud_nouv->num = R->nbNoeuds + 1;
-    noeud_nouv->voisins = NULL;
-    (R->nbNoeuds)++;
+    Noeud *noeud_nouv = creer_noeud(R->nbNoeuds + 1, x, y);
 
     // et le rajoute à la liste des noeuds du réseau
-    CellNoeud *cell_noeud_nouv = malloc(sizeof(CellNoeud));
-    cell_noeud_nouv->nd = noeud_nouv;
-    // Ajout en tete
-    cell_noeud_nouv->suiv = R->noeuds;
-    R->noeuds = cell_noeud_nouv;
+    ajouter_noeud_reseau(R, noeud_nouv);
+    // CellNoeud *cell_noeud_nouv = malloc(sizeof(CellNoeud));
+    // cell_noeud_nouv->nd = noeud_nouv;
+    // // Ajout en tete
+    // cell_noeud_nouv->suiv = R->noeuds;
+    // R->noeuds = cell_noeud_nouv;
     return noeud_nouv;
 }
 
@@ -183,15 +211,6 @@ void ajouter_commodite(Reseau *R, Noeud *extrA, Noeud *extrB)
     R->commodites = commodite;
 }
 
-// Creer cellnoeud qui point vers noeud donne
-CellNoeud *creer_cell_noeud(Noeud *nd)
-{
-    CellNoeud *cell_nouv = malloc(sizeof(CellNoeud));
-    cell_nouv->nd = nd;
-    cell_nouv->suiv = NULL;
-    return cell_nouv;
-}
-
 void ajout_voisin(Noeud *noeud_cour, Noeud *noeud_voisin)
 {
     // Creer nouvelle lien
@@ -201,7 +220,6 @@ void ajout_voisin(Noeud *noeud_cour, Noeud *noeud_voisin)
     noeud_cour->voisins = nouv_lien;
 }
 
-// Verifier si voisins contient deja le noeud. Retourne pointeur vers le cellnoeud trouve s'il existe, sinon NULL
 CellNoeud *recherche_voisin(CellNoeud *liste_voisins, Noeud *n)
 {
     if (!liste_voisins)
@@ -284,4 +302,41 @@ Reseau *reconstitueReseauListe(Chaines *C)
         noeud_voisin = NULL;
     }
     return res;
+}
+
+void liberer_reseau(Reseau **R)
+{
+    // Liberer noeuds
+    CellNoeud *noeud_cour = (*R)->noeuds;
+    CellNoeud *voisin_cour = NULL;
+    CellNoeud *tmp_cell = NULL;
+    while (noeud_cour)
+    {
+        voisin_cour = noeud_cour->nd->voisins;
+        // Pour chaque noeud liberer ces voisins
+        while (voisin_cour)
+        {
+            tmp_cell = voisin_cour->suiv;
+            free(voisin_cour);
+            voisin_cour = tmp_cell;
+        }
+        free(noeud_cour->nd);
+
+        tmp_cell = noeud_cour->suiv;
+        free(noeud_cour);
+        noeud_cour = tmp_cell;
+    }
+    // liberer commdodites
+    CellCommodite *commodite_cour = (*R)->commodites;
+    CellCommodite *tmp_commodite = NULL;
+
+    while (commodite_cour)
+    {
+        tmp_commodite = commodite_cour->suiv;
+        free(commodite_cour);
+        commodite_cour = tmp_commodite;
+    }
+
+    free(*R);
+    *R = NULL;
 }

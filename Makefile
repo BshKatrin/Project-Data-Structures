@@ -15,8 +15,11 @@ ChaineMain : ChaineMain.c Chaine.o SVGLib/SVGwriter.o
 
 Reseau.o : Reseau.c
 	$(CC) $(CFLAGS) -c -o $@ $^
-	
-ReconstitueReseau : ReconstitueReseau.c Chaine.o Reseau.o SVGLib/SVGwriter.o
+
+Hachage.o : Hachage.c
+	$(CC) $(CFLAGS) -c -o $@ $^
+
+ReconstitueReseau : ReconstitueReseau.c Chaine.o Reseau.o SVGLib/SVGwriter.o Hachage.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean : 
