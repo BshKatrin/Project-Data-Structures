@@ -14,7 +14,7 @@ CellPoint *creer_point(double x, double y)
     return new;
 }
 
-CellPoint *liste_points(int nb_points, char *l)
+CellPoint *creer_liste_points(int nb_points, char *l)
 {
     if (!nb_points)
         return NULL;
@@ -23,7 +23,7 @@ CellPoint *liste_points(int nb_points, char *l)
     x = strtod(l, &reste);
     y = strtod(reste, &reste);
     CellPoint *new = creer_point(x, y);
-    new->suiv = liste_points(nb_points - 1, reste);
+    new->suiv = creer_liste_points(nb_points - 1, reste);
     return new;
 }
 
@@ -32,16 +32,63 @@ CellChaine *insertion(CellChaine *l, CellChaine *new)
 {
     if (!l)
         return new;
-    else
-        l->suiv = insertion(l->suiv, new);
+    l->suiv = insertion(l->suiv, new);
     return l;
 }
 
-void liberer_liste_point(CellPoint *l)
+int comptePointsChaine(CellChaine *chaine)
 {
-    if (l->suiv)
-        liberer_liste_point(l->suiv);
-    free(l);
+    int cmt = 0;
+    CellPoint *point_cour = chaine->points;
+    while (point_cour)
+    {
+        cmt++;
+        point_cour = point_cour->suiv;
+    }
+    return cmt;
+}
+
+int comptePointsTotal(Chaines *C)
+{
+    int cmt = 0;
+    CellChaine *chaine_cour = C->chaines;
+    while (chaine_cour)
+    {
+        cmt += comptePointsChaine(chaine_cour);
+        chaine_cour = chaine_cour->suiv;
+    }
+    return cmt;
+}
+
+double distancePoint(CellPoint *a, CellPoint *b)
+{
+    double X = b->x - a->x;
+    double Y = b->y - a->y;
+    return sqrt(X * X + Y * Y);
+}
+
+double longueurChaine(CellChaine *c)
+{
+    double res = 0;
+    CellPoint *courant = c->points;
+    while (courant->suiv)
+    {
+        res += distancePoint(courant, courant->suiv);
+        courant = courant->suiv;
+    }
+    return res;
+}
+
+double longueurTotale(Chaines *C)
+{
+    double res = 0;
+    CellChaine *courant_chaine = C->chaines;
+    while (courant_chaine)
+    {
+        res += longueurChaine(courant_chaine);
+        courant_chaine = courant_chaine->suiv;
+    }
+    return res;
 }
 
 Chaines *lectureChaines(FILE *f)
@@ -68,23 +115,11 @@ Chaines *lectureChaines(FILE *f)
         // Création de Cellchaine
         new = malloc(sizeof(CellChaine));
         sscanf(buffer, "%d %d %[^\n]", (&new->numero), &nb_points, l_points);
-        new->points = liste_points(nb_points, l_points);
+        new->points = creer_liste_points(nb_points, l_points);
         // Ajout à la liste des chaînes
         res->chaines = insertion(res->chaines, new);
     }
     return res;
-}
-
-int nbPoints(CellChaine *chaine)
-{
-    int cmt = 0;
-    CellPoint *point_cour = chaine->points;
-    while (point_cour)
-    {
-        cmt++;
-        point_cour = point_cour->suiv;
-    }
-    return cmt;
 }
 
 void ecrireChaines(Chaines *C, FILE *f)
@@ -100,7 +135,7 @@ void ecrireChaines(Chaines *C, FILE *f)
     {
         fprintf(f, "%d ", chaine->numero);
         // Compter le nb des points
-        nb_points = nbPoints(chaine);
+        nb_points = comptePointsChaine(chaine);
         fprintf(f, "%d ", nb_points);
         // Ecrire des (x, y) des points
         point = chaine->points;
@@ -166,35 +201,11 @@ void afficheChainesSVG(Chaines *C, char *nomInstance)
     SVGfinalize(&svg);
 }
 
-double distancePoint(CellPoint *a, CellPoint *b)
+void liberer_liste_point(CellPoint *l)
 {
-    double X = b->x - a->x;
-    double Y = b->y - a->y;
-    return sqrt(X * X + Y * Y);
-}
-
-double longueurChaine(CellChaine *c)
-{
-    double res = 0;
-    CellPoint *courant = c->points;
-    while (courant->suiv)
-    {
-        res += distancePoint(courant, courant->suiv);
-        courant = courant->suiv;
-    }
-    return res;
-}
-
-double longueurTotale(Chaines *C)
-{
-    double res = 0;
-    CellChaine *courant_chaine = C->chaines;
-    while (courant_chaine)
-    {
-        res += longueurChaine(courant_chaine);
-        courant_chaine = courant_chaine->suiv;
-    }
-    return res;
+    if (l->suiv)
+        liberer_liste_point(l->suiv);
+    free(l);
 }
 
 void liberer_chaines(Chaines **C)

@@ -23,4 +23,4 @@ ReconstitueReseau : ReconstitueReseau.c Chaine.o Reseau.o SVGLib/SVGwriter.o Hac
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean : 
-	rm *.o SVGLib/*.o $(PROGRAMS) 
+	rm *.o SVGLib/*.o $(PROGRAMS) *.res *.html
