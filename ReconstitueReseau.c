@@ -4,6 +4,7 @@
 #include "Chaine.h"
 #include "Reseau.h"
 #include "Hachage.h"
+#include "ArbreQuat.h"
 
 int main(int argc, char **argv)
 {
@@ -34,6 +35,9 @@ int main(int argc, char **argv)
         break;
     case 2:
         R = reconstitueReseauHachage(C, 15);
+        break;
+    case 3:
+        R = reconstitueReseauArbre(C);
         break;
     default:
         printf("Tel choix n'est pas possible\n");

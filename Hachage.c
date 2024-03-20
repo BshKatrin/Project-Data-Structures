@@ -92,11 +92,7 @@ Reseau *reconstitueReseauHachage(Chaines *C, int M)
     TableHachage *H = creer_tab(M);
 
     // Création du réseau
-    Reseau *res = malloc(sizeof(Reseau));
-    res->nbNoeuds = 0;
-    res->gamma = C->gamma;
-    res->noeuds = NULL;
-    res->commodites = NULL;
+    Reseau *res = creer_reseau(C->gamma);
 
     // Parcours des chaines
     CellChaine *chaine_cour = C->chaines;
@@ -161,6 +157,5 @@ Reseau *reconstitueReseauHachage(Chaines *C, int M)
     }
     liberer_tab(H);
     // Desallouer la memoire occupee par une table de hachage
-
     return res;
 }

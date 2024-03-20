@@ -59,6 +59,9 @@ void ajout_voisin(Noeud *noeud_cour, Noeud *noeud_voisin);
 Retourne pointeur vers le cellnoeud trouve s'il existe, sinon NULL*/
 CellNoeud *recherche_voisin(CellNoeud *liste_voisins, Noeud *n);
 
+/* Creer une réseau vide avec gamma spécifié*/
+Reseau *creer_reseau(int gamma);
+
 Noeud *rechercheCreeNoeudListe(Reseau *R, double x, double y);
 Reseau *reconstitueReseauListe(Chaines *C);
 

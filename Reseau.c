@@ -231,14 +231,20 @@ CellNoeud *recherche_voisin(CellNoeud *liste_voisins, Noeud *n)
     return cour;
 }
 
+Reseau *creer_reseau(int gamma)
+{
+    Reseau *res = malloc(sizeof(Reseau));
+    res->nbNoeuds = 0;
+    res->gamma = gamma;
+    res->noeuds = NULL;
+    res->commodites = NULL;
+    return res;
+}
+
 Reseau *reconstitueReseauListe(Chaines *C)
 {
     // Création du réseau
-    Reseau *res = malloc(sizeof(Reseau));
-    res->nbNoeuds = 0;
-    res->gamma = C->gamma;
-    res->noeuds = NULL;
-    res->commodites = NULL;
+    Reseau *res = creer_reseau(C->gamma);
 
     // Parcours des chaines
     CellChaine *chaine_cour = C->chaines;

@@ -18,8 +18,11 @@ Reseau.o : Reseau.c
 
 Hachage.o : Hachage.c
 	$(CC) $(CFLAGS) -c -o $@ $^
+	
+ArbreQuat.o : ArbreQuat.c
+	$(CC) $(CFLAGS) -c -o $@ $^
 
-ReconstitueReseau : ReconstitueReseau.c Chaine.o Reseau.o SVGLib/SVGwriter.o Hachage.o
+ReconstitueReseau : ReconstitueReseau.c Chaine.o Reseau.o SVGLib/SVGwriter.o Hachage.o ArbreQuat.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean : 
