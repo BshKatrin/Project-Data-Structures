@@ -223,13 +223,12 @@ Reseau *reconstitueReseauArbre(Chaines *C)
 
 void liberer_arbre(ArbreQuat *A)
 {
-    // Arbre vide
     if (A == NULL)
         return;
-    free(A->no);
-    free(A->ne);
-    free(A->se);
-    free(A->so);
+    liberer_arbre(A->no);
+    liberer_arbre(A->ne);
+    liberer_arbre(A->se);
+    liberer_arbre(A->so);
 
     free(A);
 }
