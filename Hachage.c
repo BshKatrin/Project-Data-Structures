@@ -40,6 +40,7 @@ void inserer(TableHachage *H, Noeud *nd)
     // Ajouter en tete de la liste chainee
     cell->suiv = H->T[index];
     H->T[index] = cell;
+    (H->nbElement)++
 }
 
 void liberer_tab(TableHachage *H)
