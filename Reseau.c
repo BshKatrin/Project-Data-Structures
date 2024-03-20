@@ -169,6 +169,8 @@ CellNoeud *creer_cell_noeud(Noeud *nd)
 
 void ajouter_noeud_reseau(Reseau *R, Noeud *nd)
 {
+    printf("Ajout dans reseau : %d %.2f %.2f\n", nd->num, nd->x, nd->y);
+
     CellNoeud *cell_nouv = creer_cell_noeud(nd);
     cell_nouv->suiv = R->noeuds;
     R->noeuds = cell_nouv;

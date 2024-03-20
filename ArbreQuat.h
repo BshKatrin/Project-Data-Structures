@@ -38,4 +38,8 @@ Reseau *reconstitueReseauArbre(Chaines *C);
 
 /* Liberer la mémoire occupée par un arbre */
 void liberer_arbre(ArbreQuat *A);
+
+/* Affichage d'un arbre construit. N'est pas demandée. Juste pour les tests.
+Ne supprime pas les noeuds vers qui pointent des feilles */
+void afficher_arbre(ArbreQuat *A, int level);
 #endif
