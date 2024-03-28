@@ -1,4 +1,0 @@
-plot "liste_analyse.txt" using 1:2 title 'Liste chainee' with lines
-set term postscript portrait
-set output "graph_liste_chainee.ps"
-set size 0.7, 0.7

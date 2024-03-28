@@ -1,5 +1,0 @@
-plot "hash_AQ_analyse.txt" using 1:2 title 'Tab de hachage' with lines
-replot "hash_AQ_analyse.txt" using 1:3 title 'Arbre quaternaire' with lines
-set term postscript portrait
-set output "graph_hash_arbre.ps"
-set size 0.7, 0.7
