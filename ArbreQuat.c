@@ -216,7 +216,6 @@ Reseau *reconstitueReseauArbre(Chaines *C)
         noeud_prec = NULL;
         noeud_voisin = NULL;
     }
-    afficher_arbre(AQ, 0);
     liberer_arbre(AQ);
     return res;
 }

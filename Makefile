@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-Wall
-PROGRAMS=ChaineMain ReconstitueReseau
+CFLAGS=-Wall 
+PROGRAMS=ChaineMain ReconstitueReseau mainComparaison mainGraph
 
 all : $(PROGRAMS)
 
@@ -11,6 +11,12 @@ Chaine.o : Chaine.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 ChaineMain : ChaineMain.c Chaine.o SVGLib/SVGwriter.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+mainComparaison : mainComparaison.c Chaine.o Reseau.o Hachage.o ArbreQuat.o SVGLib/SVGwriter.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+mainGraph : mainGraph.c Chaine.o Reseau.o Hachage.o ArbreQuat.o SVGLib/SVGwriter.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 Reseau.o : Reseau.c

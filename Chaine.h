@@ -56,4 +56,8 @@ double longueurTotale(Chaines *C);
 void liberer_liste_point(CellPoint *l);
 /* Liberer la memoire occupee par chaines */
 void liberer_chaines(Chaines **C);
+
+/* Generer plusieures chaines, chacune contient nbPointsChaine. Les points sont générés
+aléatoirement entre (0, 0) et (xmax, ymax) */
+Chaines *generationAleatoire(int nbChaines, int nbPointsChaine, int xmax, int ymax);
 #endif

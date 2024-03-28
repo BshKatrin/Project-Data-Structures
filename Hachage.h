@@ -10,6 +10,9 @@ typedef struct
   CellNoeud **T;
 } TableHachage;
 
+/* N'EST PAS DEMANDER. Pour les tests. SUPPRIMER apres */
+void afficher_tab_hash(TableHachage *H);
+
 /* Générer un clef à partir de (x, y) de point */
 double clef(double x, double y);
 

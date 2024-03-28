@@ -1,0 +1,2 @@
+Instance Liste Hash Arbre
+data/00014_burma.cha 0.000024 0.000027 0.000033

@@ -155,7 +155,23 @@ Reseau *reconstitueReseauHachage(Chaines *C, int M)
 
         chaine_cour = chaine_cour->suiv;
     }
+    // afficher_tab_hash(H);
     liberer_tab(H);
     // Desallouer la memoire occupee par une table de hachage
     return res;
+}
+
+void afficher_tab_hash(TableHachage *H)
+{
+    for (int i = 0; i < H->tailleMax; i++)
+    {
+        printf("%d : ", i);
+        CellNoeud *cour = H->T[i];
+        while (cour)
+        {
+            printf("%d %.2f %.2f ", cour->nd->num, cour->nd->x, cour->nd->y);
+            cour = cour->suiv;
+        }
+        printf("\n");
+    }
 }

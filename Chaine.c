@@ -222,3 +222,28 @@ void liberer_chaines(Chaines **C)
     free(*C);
     *C = NULL;
 }
+
+Chaines *generationAleatoire(int nbChaines, int nbPointsChaine, int xmax, int ymax)
+{
+    Chaines *C = malloc(sizeof(Chaines));
+    C->nbChaines = nbChaines;
+    C->gamma = 3;
+    C->chaines = NULL;
+    for (int i = 0; i < nbChaines; i++)
+    {
+        CellChaine *chaine = malloc(sizeof(CellChaine));
+        chaine->numero = i;
+        chaine->points = NULL;
+        for (int j = 0; j < nbPointsChaine; j++)
+        {
+            // Générer le point
+            CellPoint *point = creer_point(rand() % xmax, rand() % ymax);
+            // L'ajouter en teste
+            point->suiv = chaine->points;
+            chaine->points = point;
+        }
+        chaine->suiv = C->chaines;
+        C->chaines = chaine;
+    }
+    return C;
+}
